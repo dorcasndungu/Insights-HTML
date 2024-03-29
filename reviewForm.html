@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            background-color: #f8f9fa; /* Light gray background */
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border: 2px solid #0074D9; /* Blue border */
+            width: 30rem;
+            margin: auto;
+            margin-top: 10vh;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        label {
+            color: #0074D9; /* Blue label text */
+        }
+        .invalid-feedback {
+            color: #FF4136; /* Red error message text */
+        }
+        .btn-primary {
+            background-color: #0074D9; /* Blue submit button */
+            border-color: #0074D9;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+            <h2 class="card-title text-center mb-4" style="color: #0074D9;">Please give a review to continue 🚶‍♀️🚶‍♂️...</h2>
+            <form id="reviewForm" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="instructorName">Instructor's Name</label>
+                    <input type="text" class="form-control" id="instructorName" name="instructorName" required>
+                    <div class="invalid-feedback" id="instructorError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="courseName">Course Name</label>
+                    <input type="text" class="form-control" id="courseName" name="courseName" required>
+                    <div class="invalid-feedback" id="courseError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="review">Review</label>
+                    <textarea class="form-control" id="review" name="review" rows="3" required></textarea>
+                    <div class="invalid-feedback" id="reviewError"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const instructorName = document.getElementById('instructorName').value;
+            const courseName = document.getElementById('courseName').value;
+            const review = document.getElementById('review').value;
+
+            // Basic validation (you can add more checks if needed)
+            if (!instructorName) {
+                document.getElementById('instructorError').textContent = 'Please enter the instructor\'s name.';
+                return false;
+            }
+            if (!courseName) {
+                document.getElementById('courseError').textContent = 'Please enter the course name.';
+                return false;
+            }
+            if (!review) {
+                document.getElementById('reviewError').textContent = 'Please provide a review.';
+                return false;
+            }
+
+            // Form is valid, proceed with submission
+            return true;
+        }
+    </script>
+</body>
+</html>
