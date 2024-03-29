@@ -89,7 +89,10 @@ body {
     .tagline {
       font-size: 1.25rem; /* Adjust tagline size for smaller screens */
     }
-  
+    .tagline2 {
+      font-size: 1.0rem; /* Adjust tagline size for smaller screens */
+      color: #797d80;
+    }
     .card {
       width: 90%; /* Make the card width responsive */
     }
