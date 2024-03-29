@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights👀</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Insights👀</h1>
+        <p class="tagline">Get insights on prospective instructors</p>
+        <div class="search-bar mt-3">
+            <input type="text" class="form-control rounded-pill" placeholder ="🔍 Search an instructor...">
+           
+        </div>
+        <!-- Results list -->
+        <div class="results mt-5">
+            <!-- Example of an instructor card -->
+            <div class="card rounded-lg mb-3">
+                <div class="card-body">
+                    <h5 class="card-title" id="johnDoeCard">John Doe</h5>
+                    <p class="card-text">Introduction to React</p>
+                </div>
+            </div>
+            <!-- Example of a 'no reviews' card -->
+            <div class="card rounded-lg mb-3 text-muted">
+                <div class="card-body">
+                    <p class="card-text">Instructor has no reviews yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle card click
+        function handleCardClick() {
+            // Redirect to the "addReview" page
+            window.location.href = "reviewForm.html"; // Replace with your actual page URL
+        }
+    
+        // Attach the click event listener to the card
+        document.getElementById("johnDoeCard").addEventListener("click", handleCardClick);
+    </script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
