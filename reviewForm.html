@@ -33,6 +33,10 @@
         }
     </style>
     </style>
+    <script src="https://www.googleapis.com/identitytoolkit/v3/auth-instance.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js"></script>
+    
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
@@ -60,6 +64,23 @@
     </div>
 
     <script>
+             // Replace these with your actual Firebase project configuration
+             const firebaseConfig = {
+                apiKey: "AIzaSyByw5s7UdIOPBsvHayiqCgWoRuFFK-jfbs",
+  authDomain: "insights-122fd.firebaseapp.com",
+  projectId: "insights-122fd",
+  storageBucket: "insights-122fd.appspot.com",
+  messagingSenderId: "379044128232",
+  appId: "1:379044128232:web:d3655958bddbe22856705d",
+  measurementId: "G-EKS8RY0124"
+        };
+
+        // Initialize Firebase app
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the Firestore database
+        const db = firebase.firestore();
+
         function validateForm() {
             const instructorName = document.getElementById('instructorName').value;
             const courseName = document.getElementById('courseName').value;
@@ -78,9 +99,30 @@
                 document.getElementById('reviewError').textContent = 'Please provide a review.';
                 return false;
             }
-
+// Add review data to Firestore
+addReviewToFirestore(instructorName, courseName, review);
             // Form is valid, proceed with submission
             return true;
+        }
+        async function addReviewToFirestore(instructorName, courseName, review) {
+            try {
+                // Create a new review document
+                const newReviewRef = await db.collection('reviews').add({
+                    instructorName: instructorName,
+                    courseName: courseName,
+                    review: review,
+                    // You can add additional fields like timestamp, user ID, etc.
+                });
+
+                console.log('Review added successfully:', newReviewRef.id);
+                alert('Your review has been submitted!');
+
+                // Clear the form after successful submission (optional)
+                document.getElementById('reviewForm').reset();
+            } catch (error) {
+                console.error('Error adding review:', error);
+                alert('There was an error submitting your review. Please try again.');
+            }
         }
     </script>
 </body>
