@@ -126,10 +126,7 @@
             // Clear the form after successful submission (optional)
             document.getElementById('reviewForm').reset();
 
-            // Update button text to show success message
-            const submitButton = document.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Review Submitted!';
-            submitButton.disabled = true; // Disable button after submission
+          
         } catch (error) {
             console.error('Error adding review:', error);
             alert('There was an error submitting your review. Please try again.');
