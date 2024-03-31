@@ -58,12 +58,17 @@
                     <textarea class="form-control" id="review" name="review" rows="3" required></textarea>
                     <div class="invalid-feedback" id="reviewError"></div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+
             </form>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Replace these with your actual Firebase project configuration
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js';
+        import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
+    
              // Replace these with your actual Firebase project configuration
              const firebaseConfig = {
                 apiKey: "AIzaSyByw5s7UdIOPBsvHayiqCgWoRuFFK-jfbs",
@@ -75,55 +80,73 @@
   measurementId: "G-EKS8RY0124"
         };
 
-        // Initialize Firebase app
-        firebase.initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
 
-        // Get a reference to the Firestore database
-        const db = firebase.firestore();
+    // Get a reference to the Firestore database
+    const db = getDatabase(app);
 
-        function validateForm() {
-            const instructorName = document.getElementById('instructorName').value;
-            const courseName = document.getElementById('courseName').value;
-            const review = document.getElementById('review').value;
+    function validateForm() {
+        const instructorName = document.getElementById('instructorName').value;
+        const courseName = document.getElementById('courseName').value;
+        const review = document.getElementById('review').value;
 
-            // Basic validation (you can add more checks if needed)
-            if (!instructorName) {
-                document.getElementById('instructorError').textContent = 'Please enter the instructor\'s name.';
-                return false;
-            }
-            if (!courseName) {
-                document.getElementById('courseError').textContent = 'Please enter the course name.';
-                return false;
-            }
-            if (!review) {
-                document.getElementById('reviewError').textContent = 'Please provide a review.';
-                return false;
-            }
-// Add review data to Firestore
-addReviewToFirestore(instructorName, courseName, review);
-            // Form is valid, proceed with submission
-            return true;
+        // Basic validation (you can add more checks if needed)
+        if (!instructorName) {
+            document.getElementById('instructorError').textContent = 'Please enter the instructor\'s name.';
+            return false;
         }
-        async function addReviewToFirestore(instructorName, courseName, review) {
-            try {
-                // Create a new review document
-                const newReviewRef = await db.collection('reviews').add({
-                    instructorName: instructorName,
-                    courseName: courseName,
-                    review: review,
-                    // You can add additional fields like timestamp, user ID, etc.
-                });
-
-                console.log('Review added successfully:', newReviewRef.id);
-                alert('Your review has been submitted!');
-
-                // Clear the form after successful submission (optional)
-                document.getElementById('reviewForm').reset();
-            } catch (error) {
-                console.error('Error adding review:', error);
-                alert('There was an error submitting your review. Please try again.');
-            }
+        if (!courseName) {
+            document.getElementById('courseError').textContent = 'Please enter the course name.';
+            return false;
         }
+        if (!review) {
+            document.getElementById('reviewError').textContent = 'Please provide a review.';
+            return false;
+        }
+        // Add review data to Firestore
+        addReviewToRealtimeDatabase(instructorName, courseName, review);
+        // Form is valid, prevent default form submission
+        return false;
+    }
+
+    async function addReviewToRealtimeDatabase(instructorName, courseName, review) {
+        try {
+            // Create a new review entry in the Realtime Database
+            const reviewsRef = ref(db, 'reviews'); // Reference to the 'reviews' node
+            const newReviewRef = push(reviewsRef, {
+                instructorName: instructorName,
+                courseName: courseName,
+                review: review,
+                // You can add additional fields like timestamp, user ID, etc.
+            });
+
+            console.log('Review added successfully:', newReviewRef.key);
+            alert('Your review has been submitted!');
+
+            // Clear the form after successful submission (optional)
+            document.getElementById('reviewForm').reset();
+
+            // Update button text to show success message
+            const submitButton = document.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Review Submitted!';
+            submitButton.disabled = true; // Disable button after submission
+        } catch (error) {
+            console.error('Error adding review:', error);
+            alert('There was an error submitting your review. Please try again.');
+        }
+
+    }
+    // Get a reference to the submit button
+const submitButton = document.getElementById('submitButton');
+
+// Add click event listener to the submit button
+submitButton.addEventListener('click', function(event) {
+    // Prevent default form submission behavior
+    event.preventDefault();
+
+    // Call the validateForm function when the button is clicked
+    validateForm();
+});
     </script>
 </body>
 </html>
