@@ -16,36 +16,107 @@
         <p class="tagline2 "><i>⚠️The reviews should be treated as only opinions and not truths</i></p>
         <div style="width:100%;height:40%;padding-bottom:20%;position:relative;"><iframe src="https://giphy.com/embed/LpkLWXTp0v0qy70xPp" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/danger-steve-irwin-the-crocodile-hunter-LpkLWXTp0v0qy70xPp">via GIPHY</a></p>
         <div class="search-bar mt-3">
-            <input type="text" class="form-control rounded-pill" placeholder ="🔍 Search an instructor...">
+            <input type="text" id="searchInput" class="form-control rounded-pill" placeholder ="🔍 Search an instructor...">
            
         </div>
         <!-- Results list -->
         <div class="results mt-5">
-            <!-- Example of an instructor card -->
-            <div class="card rounded-lg mb-3">
-                <div class="card-body">
-                    <h5 class="card-title" id="johnDoeCard">John Doe</h5>
-                    <p class="card-text">Introduction to React</p>
-                </div>
-            </div>
-            <!-- Example of a 'no reviews' card -->
-            <div class="card rounded-lg mb-3 text-muted">
-                <div class="card-body">
-                    <p class="card-text">Instructor has no reviews yet</p>
-                </div>
-            </div>
+         <!-- Example of an instructor card -->
+    <div class="card rounded-lg mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Instructor Name</h5>
+            <p class="card-text">Course Name</p>
+            <p class="card-text">Review Text</p>
+        </div>
+    </div>
+    <!-- Example of a 'no reviews' card -->
+    <div class="card rounded-lg mb-3 text-muted">
+        <div class="card-body">
+            <p class="card-text">No reviews found for "Your Query"</p>
+        </div>
+    </div>
+          
         </div>
     </div>
 
-    <script>
-        // Function to handle card click
-        function handleCardClick() {
-            // Redirect to the "addReview" page
-            window.location.href = "reviewForm.html"; // Replace with your actual page URL
+    <script type="module">
+        // Replace these with your actual Firebase project configuration
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js';
+        import { getDatabase, ref, query, orderByChild, equalTo, get } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyByw5s7UdIOPBsvHayiqCgWoRuFFK-jfbs",
+  authDomain: "insights-122fd.firebaseapp.com",
+  projectId: "insights-122fd",
+  storageBucket: "insights-122fd.appspot.com",
+  messagingSenderId: "379044128232",
+  appId: "1:379044128232:web:d3655958bddbe22856705d",
+  measurementId: "G-EKS8RY0124"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+    
+        async function searchAndDisplayResults(query) {
+            try {
+                const reviewsRef = ref(db, 'reviews');
+
+                const queryRef = orderByChild(reviewsRef, 'instructorName').equalTo(query);
+                const snapshot = await get(queryRef);
+    
+                if (snapshot.exists()) {
+                    // Data found, display all matching snapshots
+                    const resultsContainer = document.querySelector('.results');
+                    resultsContainer.innerHTML = ''; // Clear previous results
+    
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        const instructorName = data.instructorName;
+                        const courseName = data.courseName;
+                        const review = data.review;
+    
+                        // Create a card for each result
+                        const card = document.createElement('div');
+                        card.classList.add('card', 'rounded-lg', 'mb-3');
+                        card.innerHTML = `
+                            <div class="card-body">
+                                <h5 class="card-title">${instructorName}</h5>
+                                <p class="card-text">${courseName}</p>
+                                <p class="card-text">${review}</p>
+                            </div>
+                        `;
+                        resultsContainer.appendChild(card);
+                        resultsContainer.style.display = 'block';
+                    });
+                } else {
+                    // No data found
+                    const noReviewsCard = `
+                        <div class="card rounded-lg mb-3 text-muted">
+                            <div class="card-body">
+                                <p class="card-text">No reviews found for "${query}"</p>
+                            </div>
+                        </div>
+                    `;
+                    const resultsContainer = document.querySelector('.results');
+                    resultsContainer.innerHTML = ''; // Clear previous results
+                    document.querySelector('.results').innerHTML = noReviewsCard;
+                    resultsContainer.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error retrieving data:', error);
+            }
         }
     
-        // Attach the click event listener to the card
-        document.getElementById("johnDoeCard").addEventListener("click", handleCardClick);
+        // Get a reference to the search input field
+        const searchInput = document.getElementById('searchInput');
+    
+     // Add event listener for Enter key press
+     searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const query = searchInput.value.trim();
+            searchAndDisplayResults(query);
+        }
+    });
     </script>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
