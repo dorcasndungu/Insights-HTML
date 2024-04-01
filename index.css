@@ -97,3 +97,6 @@ body {
       width: 90%; /* Make the card width responsive */
     }
   }
+  .results {
+    display: none;
+}
